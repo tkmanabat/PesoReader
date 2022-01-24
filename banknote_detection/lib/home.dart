@@ -76,7 +76,14 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
         toolbarHeight: 80,
         centerTitle: true,
         title:
-            Text('Banknote Detection', style: TextStyle(color: Colors.black)),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset("assets/Logo.png",
+                          width:70,),
+                Text('Peso Reader', style: TextStyle(color: Colors.black,fontSize: 15)),
+              ],
+            ),
         backgroundColor: Colors.white,
         actions: [
           IconButton(
@@ -311,9 +318,15 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
       // ),
       appBar: AppBar(
         toolbarHeight: 80,
-        title: Center(
-            child: Text('Banknote Detection',
-                style: TextStyle(color: Colors.black))),
+        centerTitle: true,
+        title: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset("assets/Logo.png",
+                          width:70,),
+                Text('Peso Reader', style: TextStyle(color: Colors.black,fontSize: 15)),
+              ],
+            ),
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
       ),
