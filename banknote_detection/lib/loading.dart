@@ -43,9 +43,9 @@ class _LoadingState extends State<Loading> {
               ),
               ),
 
-              SizedBox(height: 20),
+              SizedBox(height: 50),
 
-              SpinKitCubeGrid(
+              SpinKitFadingCube(
                 color: Colors.black,
                 size: 50.0,
               ),

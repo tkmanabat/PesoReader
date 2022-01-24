@@ -86,6 +86,7 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
             ),
         backgroundColor: Colors.white,
         actions: [
+          
           IconButton(
             padding: EdgeInsets.only(right: 30),
             onPressed: () {
