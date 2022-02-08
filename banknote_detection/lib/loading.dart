@@ -30,11 +30,11 @@ class _LoadingState extends State<Loading> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset("assets/Logo.png",
+              Image.asset("assets/Icon.gif",
                           height: 120,
                           width:120,),
 
-              Text('Peso Reader 💵',
+              Text('PesoReader 💵',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize:25.0,

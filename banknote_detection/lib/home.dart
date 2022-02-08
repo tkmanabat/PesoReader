@@ -79,9 +79,9 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset("assets/Logo.png",
+                Image.asset("assets/Icon_Clear.png",height: 55,
                           width:70,),
-                Text('Peso Reader', style: TextStyle(color: Colors.black,fontSize: 15)),
+                Text('PesoReader', style: TextStyle(color: Colors.black,fontSize: 12)),
               ],
             ),
         backgroundColor: Colors.white,
@@ -323,9 +323,10 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
         title: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset("assets/Logo.png",
+                Image.asset("assets/Icon_Clear.png",
+                          height: 55,
                           width:70,),
-                Text('Peso Reader', style: TextStyle(color: Colors.black,fontSize: 15)),
+                Text('Peso Reader', style: TextStyle(color: Colors.black,fontSize: 12)),
               ],
             ),
         automaticallyImplyLeading: false,
