@@ -16,7 +16,7 @@ Future<void> main() async{
     debugShowCheckedModeBanner: false,
     initialRoute: '/',
     routes: {
-      '/': (context) => Loading(),
+      '/': (context) => const Loading(),
       '/home': (context) => TakePictureScreen(camera: firstCamera),
     },
   ));

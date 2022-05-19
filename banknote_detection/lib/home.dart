@@ -45,7 +45,7 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
     _initializeControllerFuture = _controller.initialize();
 
     FlutterTts flutterTts;
-    flutterTts = new FlutterTts();
+    flutterTts = FlutterTts();
     flutterTts.setSpeechRate(0.8);
     flutterTts.awaitSpeakCompletion(true);
     flutterTts.speak("Ready to Detect!");
@@ -81,20 +81,20 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
               children: [
                 Image.asset("assets/Icon_Clear.png",height: 55,
                           width:70,),
-                Text('PesoReader', style: TextStyle(color: Colors.black,fontSize: 12)),
+                const Text('PesoReader', style: TextStyle(color: Colors.black,fontSize: 12)),
               ],
             ),
         backgroundColor: Colors.white,
         actions: [
           IconButton(
-            padding: EdgeInsets.only(right: 30),
+            padding: const EdgeInsets.only(right: 30),
             onPressed: () {
               setState(() {
                 counter = !counter;
               });
 
               FlutterTts flutterTts;
-              flutterTts = new FlutterTts();
+              flutterTts = FlutterTts();
               flutterTts.setSpeechRate(0.8);
               flutterTts.awaitSpeakCompletion(true);
               if (counter == true) {
@@ -123,7 +123,7 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
               return CameraPreview(_controller);
             } else {
               // Otherwise, display a loading indicator.
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
           },
         ),
@@ -160,7 +160,7 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
           });
 
           FlutterTts flutterTts;
-          flutterTts = new FlutterTts();
+          flutterTts = FlutterTts();
           await flutterTts.setSpeechRate(0.8);
           await flutterTts.awaitSpeakCompletion(true);
           await flutterTts.speak("Your Total has been reset.");
@@ -176,8 +176,8 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
                 fixedSize: const Size(1000, 70),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(0))),
-            label: Text("Pick from Gallery"),
-            icon: Icon(Icons.photo),
+            label: const Text("Pick from Gallery"),
+            icon: const Icon(Icons.photo),
             onPressed: () async {
               await pickGalleryImage();
               print(path);
@@ -226,9 +226,9 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
   Widget build(BuildContext context) {
 //    Image img = Image.file(File(widget.imagePath));
 //    classifyImage(widget.imagePath, total);
-    new Future.delayed(const Duration(seconds: 1), () {
+    Future.delayed(const Duration(seconds: 1), () {
       Navigator.of(context).maybePop();
-      ;
+      
     });
 
     return Scaffold(
@@ -247,7 +247,7 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
                 Image.asset("assets/Icon_Clear.png",
                           height: 55,
                           width:70,),
-                Text('Peso Reader', style: TextStyle(color: Colors.black,fontSize: 12)),
+                const Text('Peso Reader', style: TextStyle(color: Colors.black,fontSize: 12)),
               ],
             ),
         automaticallyImplyLeading: false,
@@ -256,7 +256,7 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
       body: loading
           ? Container(
               alignment: Alignment.center,
-              child: CircularProgressIndicator(),
+              child: const CircularProgressIndicator(),
             )
           : Container(
               child: Row(
@@ -269,7 +269,7 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
                       //width: double.infinity,
                       child: Text(
                         '${op[0]["label"]} Pesos',
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.white,
                             fontSize: 65,
                             fontWeight: FontWeight.bold),
@@ -292,7 +292,7 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
 
   Future<void> runTextToSpeech(String outputMoney, int totalMoney) async {
     FlutterTts flutterTts;
-    flutterTts = new FlutterTts();
+    flutterTts = FlutterTts();
 
     String tot = totalMoney.toString();
     print(tot);

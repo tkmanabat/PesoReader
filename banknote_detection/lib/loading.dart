@@ -16,7 +16,7 @@ class _LoadingState extends State<Loading> {
   }
 
   navigateHome() async {
-    await Future.delayed(Duration(milliseconds: 3000), () {});
+    await Future.delayed(const Duration(milliseconds: 3000), () {});
     Navigator.pushReplacementNamed(context, '/home');
   }
 
@@ -24,17 +24,16 @@ class _LoadingState extends State<Loading> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        body: new Container(
+        body:  Container(
           alignment: Alignment.center,
-          child: new Column(
+          child:  Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset("assets/Icon.gif",
                           height: 120,
                           width:120,),
-
-              Text('PesoReader 💵',
+              const Text('PesoReader 💵',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize:25.0,
@@ -43,9 +42,9 @@ class _LoadingState extends State<Loading> {
               ),
               ),
 
-              SizedBox(height: 50),
+              const SizedBox(height: 50),
 
-              SpinKitFadingCube(
+              const SpinKitFadingCube(
                 color: Colors.black,
                 size: 50.0,
               ),
