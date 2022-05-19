@@ -86,7 +86,6 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
             ),
         backgroundColor: Colors.white,
         actions: [
-          
           IconButton(
             padding: EdgeInsets.only(right: 30),
             onPressed: () {
@@ -98,7 +97,6 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
               flutterTts = new FlutterTts();
               flutterTts.setSpeechRate(0.8);
               flutterTts.awaitSpeakCompletion(true);
-
               if (counter == true) {
                 flutterTts.speak("Counter Enabled");
               } else {
@@ -110,9 +108,11 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
           ),
         ],
       ),
+
       // Wait until the controller is initialized before displaying the
       // camera preview. Use a FutureBuilder to display a loading spinner
       // until the controller has finished initializing.
+      
       body: Stack(children: <Widget>[
         FutureBuilder<void>(
           future: _initializeControllerFuture,
@@ -165,115 +165,36 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
           await flutterTts.awaitSpeakCompletion(true);
           await flutterTts.speak("Your Total has been reset.");
         }),
-        Positioned.fill(
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                  primary: Colors.black,
-                  fixedSize: const Size(1000, 80),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(0))),
-              label: Text("Pick from Gallery"),
-              icon: Icon(Icons.photo),
-              onPressed: () async {
-                await pickGalleryImage();
-                print(path);
-                if (path != null) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) {
-                      return DisplayPictureScreen(path);
-                    } //DisplayPictureScreen(path),
-                        ),
-                  );
-                }
-                ;
-              },
-            ),
+
+        ]),
+
+        
+        bottomNavigationBar: BottomAppBar(
+          child: ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(
+                primary: Colors.black,
+                fixedSize: const Size(1000, 70),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0))),
+            label: Text("Pick from Gallery"),
+            icon: Icon(Icons.photo),
+            onPressed: () async {
+              await pickGalleryImage();
+              print(path);
+              if (path != null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return DisplayPictureScreen(path);
+                  } //DisplayPictureScreen(path),
+                      ),
+                );
+              }
+              
+            },
           ),
-        ),
-        // Positioned.fill(
-        //   child: Align(
-        //     alignment: Alignment.topCenter,
-        //     child: ElevatedButton(
-        //       style: ElevatedButton.styleFrom(
-        //           primary: Colors.grey,
-        //           fixedSize: const Size(1000, 50),
-        //           shape: RoundedRectangleBorder(
-        //               borderRadius: BorderRadius.circular(0))),
-        //       child: Text("${total}"),
-        //       onPressed: () {},
-        //     ),
-        //   ),
-        // )
-      ]),
-      // floatingActionButton: FloatingActionButton(
-      //   child: Icon(Icons.photo),
-      //   onPressed: () async {
-      //     await pickGalleryImage();
-      //     print(path);
-      //     Navigator.push(
-      //       context,
-      //       MaterialPageRoute(builder: (context) {
-      //         return DisplayPictureScreen(path);
-      //       } //DisplayPictureScreen(path),
-      //       ),
-      //     );
-      //   },
-      // )
+        )
 
-      // floatingActionButton: Column(
-      //   mainAxisAlignment: MainAxisAlignment.end,
-      //   children: <Widget>[
-      //     Center(
-      //       child: Container(
-      //         height: 180.0,
-      //         width: 180.0,
-      //         child: FittedBox(
-      //           child: FloatingActionButton(
-      //             child: Icon(Icons.camera_alt),
-      //             // Provide an onPressed callback.
-      //             onPressed: () async {
-      //               // Take the Picture in a try / catch block. If anything goes wrong,
-      //               // catch the error.
-      //               try {
-      //                 // Ensure that the camera is initialized.
-      //                 await _initializeControllerFuture;
-
-      //                 // Construct the path where the image should be saved using the
-      //                 // pattern package.
-      //                 final path = join(
-      //                   // Store the picture in the temp directory.
-      //                   // Find the temp directory using the `path_provider` plugin.
-      //                   (await getTemporaryDirectory()).path,
-      //                   '${DateTime.now()}.png',
-      //                 );
-
-      //                 // Attempt to take a picture and log where it's been saved.
-      //                 await _controller.takePicture(path);
-
-      //                 // If the picture was taken, display it on a new screen.
-      //                 Navigator.push(
-      //                   context,
-      //                   MaterialPageRoute(
-      //                     builder: (context) {
-      //                         return DisplayPictureScreen(path);
-
-      //                     } //DisplayPictureScreen(path),
-      //                   ),
-      //                 );
-      //               } catch (e) {
-      //                 // If an error occurs, log the error to the console.
-      //                 print(e);
-      //               }
-      //             },
-      //           ),
-      //         ),
-      //       ),
-      //     ),
-      //   ],
-      // ),
     );
   }
 }
