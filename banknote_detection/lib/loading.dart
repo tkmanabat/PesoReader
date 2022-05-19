@@ -24,34 +24,42 @@ class _LoadingState extends State<Loading> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        body:  Container(
-          alignment: Alignment.center,
-          child:  Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.asset("assets/Icon.gif",
-                          height: 120,
-                          width:120,),
-              const Text('PesoReader 💵',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize:25.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-              ),
-
-              const SizedBox(height: 50),
-
-              const SpinKitFadingCube(
-                color: Colors.black,
-                size: 50.0,
-              ),
-
-            ],
-
-          )
-          ));
+        body:  Semantics(
+          label:'PesoReader Loading Screen',
+          child: Container(
+            alignment: Alignment.center,
+            child:  Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ExcludeSemantics(
+                  child: Image.asset("assets/Icon.gif",
+                              height: 120,
+                              width:120,),
+                ),
+                const ExcludeSemantics(
+                  excluding: true,
+                  child:  Text('PesoReader 💵',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize:25.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                  ),
+                ),
+        
+                const SizedBox(height: 50),
+        
+                const SpinKitFadingCube(
+                  color: Colors.black,
+                  size: 50.0,
+                ),
+        
+              ],
+        
+            )
+            ),
+        ));
   }
 }

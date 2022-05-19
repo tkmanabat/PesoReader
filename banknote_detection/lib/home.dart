@@ -76,35 +76,41 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
         toolbarHeight: 80,
         centerTitle: true,
         title:
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset("assets/Icon_Clear.png",height: 55,
-                          width:70,),
-                const Text('PesoReader', style: TextStyle(color: Colors.black,fontSize: 12)),
-              ],
+            ExcludeSemantics(
+              excluding: true,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset("assets/Icon_Clear.png",height: 55,
+                            width:70,),
+                  const Text('PesoReader', style: TextStyle(color: Colors.black,fontSize: 12)),
+                ],
+              ),
             ),
         backgroundColor: Colors.white,
         actions: [
-          IconButton(
-            padding: const EdgeInsets.only(right: 30),
-            onPressed: () {
-              setState(() {
-                counter = !counter;
-              });
-
-              FlutterTts flutterTts;
-              flutterTts = FlutterTts();
-              flutterTts.setSpeechRate(0.8);
-              flutterTts.awaitSpeakCompletion(true);
-              if (counter == true) {
-                flutterTts.speak("Counter Enabled");
-              } else {
-                flutterTts.speak("Counter Disabled");
-              }
-            },
-            icon: Icon(Icons.layers_clear,
-                color: counter ? Colors.black : Colors.grey, size: 25),
+          Semantics(
+            label: 'Counter',
+            child: IconButton(
+              padding: const EdgeInsets.only(right: 30),
+              onPressed: () {
+                setState(() {
+                  counter = !counter;
+                });
+          
+                FlutterTts flutterTts;
+                flutterTts = FlutterTts();
+                flutterTts.setSpeechRate(0.8);
+                flutterTts.awaitSpeakCompletion(true);
+                if (counter == true) {
+                  flutterTts.speak("Counter Enabled");
+                } else {
+                  flutterTts.speak("Counter Disabled");
+                }
+              },
+              icon: Icon(Icons.layers_clear,
+                  color: counter ? Colors.black : Colors.grey, size: 25),
+            ),
           ),
         ],
       ),
@@ -127,44 +133,48 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
             }
           },
         ),
-        GestureDetector(onTap: () async {
-          try {
-            // Ensure that the camera is initialized.
-            await _initializeControllerFuture;
-
-            // Construct the path where the image should be saved using the
-            // pattern package.
-            final path = join(
-              // Store the picture in the temp directory.
-              // Find the temp directory using the `path_provider` plugin.
-              (await getTemporaryDirectory()).path,'${DateTime.now()}.png',);
-
-            // Attempt to take a picture and log where it's been saved.
-            await _controller.takePicture(path);
-
-            // If the picture was taken, display it on a new screen.
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) {
-                return DisplayPictureScreen(path);
-              } //DisplayPictureScreen(path),
-                  ),
-            );
-          } catch (e) {
-            // If an error occurs, log the error to the console.
-            print(e);
-          }
-        }, onLongPress: () async {
-          setState(() {
-            total = 0;
-          });
-
-          FlutterTts flutterTts;
-          flutterTts = FlutterTts();
-          await flutterTts.setSpeechRate(0.8);
-          await flutterTts.awaitSpeakCompletion(true);
-          await flutterTts.speak("Your Total has been reset.");
-        }),
+        Semantics(
+          label: 'Detect bill',
+          onLongPressHint: 'Reset total counter',
+          child: GestureDetector(onTap: () async {
+            try {
+              // Ensure that the camera is initialized.
+              await _initializeControllerFuture;
+        
+              // Construct the path where the image should be saved using the
+              // pattern package.
+              final path = join(
+                // Store the picture in the temp directory.
+                // Find the temp directory using the `path_provider` plugin.
+                (await getTemporaryDirectory()).path,'${DateTime.now()}.png',);
+        
+              // Attempt to take a picture and log where it's been saved.
+              await _controller.takePicture(path);
+        
+              // If the picture was taken, display it on a new screen.
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) {
+                  return DisplayPictureScreen(path);
+                } //DisplayPictureScreen(path),
+                    ),
+              );
+            } catch (e) {
+              // If an error occurs, log the error to the console.
+              print(e);
+            }
+          }, onLongPress: () async {
+            setState(() {
+              total = 0;
+            });
+        
+            FlutterTts flutterTts;
+            flutterTts = FlutterTts();
+            await flutterTts.setSpeechRate(0.8);
+            await flutterTts.awaitSpeakCompletion(true);
+            await flutterTts.speak("Your Total has been reset.");
+          }),
+        ),
 
         ]),
 
@@ -241,15 +251,18 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
       appBar: AppBar(
         toolbarHeight: 80,
         centerTitle: true,
-        title: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset("assets/Icon_Clear.png",
-                          height: 55,
-                          width:70,),
-                const Text('Peso Reader', style: TextStyle(color: Colors.black,fontSize: 12)),
-              ],
-            ),
+        title: ExcludeSemantics(
+          excluding: true,
+          child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset("assets/Icon_Clear.png",
+                            height: 55,
+                            width:70,),
+                  const Text('Peso Reader', style: TextStyle(color: Colors.black,fontSize: 12)),
+                ],
+              ),
+        ),
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
       ),
