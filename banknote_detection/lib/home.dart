@@ -72,113 +72,115 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 80,
-        centerTitle: true,
-        title:
-            ExcludeSemantics(
-              excluding: true,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset("assets/Icon_Clear.png",height: 55,
-                            width:70,),
-                  const Text('PesoReader', style: TextStyle(color: Colors.black,fontSize: 12)),
-                ],
-              ),
-            ),
-        backgroundColor: Colors.white,
-        actions: [
-          Semantics(
-            label: 'Counter',
-            child: IconButton(
-              padding: const EdgeInsets.only(right: 30),
-              onPressed: () {
-                setState(() {
-                  counter = !counter;
-                });
-          
-                FlutterTts flutterTts;
-                flutterTts = FlutterTts();
-                flutterTts.setSpeechRate(0.8);
-                flutterTts.awaitSpeakCompletion(true);
-                if (counter == true) {
-                  flutterTts.speak("Counter Enabled");
-                } else {
-                  flutterTts.speak("Counter Disabled");
-                }
-              },
-              icon: Icon(Icons.layers_clear,
-                  color: counter ? Colors.black : Colors.grey, size: 25),
+        appBar: AppBar(
+          toolbarHeight: 80,
+          centerTitle: true,
+          excludeHeaderSemantics: true,
+          title: Semantics(
+            label: 'App Logo',
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/Icon_Clear.png",
+                  height: 55,
+                  width: 70,
+                ),
+                const Text('PesoReader',
+                    style: TextStyle(color: Colors.black, fontSize: 12)),
+              ],
             ),
           ),
-        ],
-      ),
+          backgroundColor: Colors.white,
+          actions: [
+            Semantics(
+              label: 'Counter',
+              child: IconButton(
+                padding: const EdgeInsets.only(right: 30),
+                onPressed: () {
+                  setState(() {
+                    counter = !counter;
+                  });
 
-      // Wait until the controller is initialized before displaying the
-      // camera preview. Use a FutureBuilder to display a loading spinner
-      // until the controller has finished initializing.
-      
-      body: Stack(children: <Widget>[
-        FutureBuilder<void>(
-          future: _initializeControllerFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              // If the Future is complete, display the preview.
-
-              return CameraPreview(_controller);
-            } else {
-              // Otherwise, display a loading indicator.
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
-        ),
-        Semantics(
-          label: 'Detect bill',
-          onLongPressHint: 'Reset total counter',
-          child: GestureDetector(onTap: () async {
-            try {
-              // Ensure that the camera is initialized.
-              await _initializeControllerFuture;
-        
-              // Construct the path where the image should be saved using the
-              // pattern package.
-              final path = join(
-                // Store the picture in the temp directory.
-                // Find the temp directory using the `path_provider` plugin.
-                (await getTemporaryDirectory()).path,'${DateTime.now()}.png',);
-        
-              // Attempt to take a picture and log where it's been saved.
-              await _controller.takePicture(path);
-        
-              // If the picture was taken, display it on a new screen.
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) {
-                  return DisplayPictureScreen(path);
-                } //DisplayPictureScreen(path),
-                    ),
-              );
-            } catch (e) {
-              // If an error occurs, log the error to the console.
-              print(e);
-            }
-          }, onLongPress: () async {
-            setState(() {
-              total = 0;
-            });
-        
-            FlutterTts flutterTts;
-            flutterTts = FlutterTts();
-            await flutterTts.setSpeechRate(0.8);
-            await flutterTts.awaitSpeakCompletion(true);
-            await flutterTts.speak("Your Total has been reset.");
-          }),
+                  FlutterTts flutterTts;
+                  flutterTts = FlutterTts();
+                  flutterTts.setSpeechRate(0.8);
+                  flutterTts.awaitSpeakCompletion(true);
+                  if (counter == true) {
+                    flutterTts.speak("Counter Enabled");
+                  } else {
+                    flutterTts.speak("Counter Disabled");
+                  }
+                },
+                icon: Icon(Icons.layers_clear,
+                    color: counter ? Colors.black : Colors.grey, size: 25),
+              ),
+            ),
+          ],
         ),
 
+        // Wait until the controller is initialized before displaying the
+        // camera preview. Use a FutureBuilder to display a loading spinner
+        // until the controller has finished initializing.
+
+        body: Stack(children: <Widget>[
+          FutureBuilder<void>(
+            future: _initializeControllerFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                // If the Future is complete, display the preview.
+
+                return CameraPreview(_controller);
+              } else {
+                // Otherwise, display a loading indicator.
+                return const Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+          Semantics(
+            label: 'Detect bill',
+            onLongPressHint: 'Reset total counter',
+            child: GestureDetector(onTap: () async {
+              try {
+                // Ensure that the camera is initialized.
+                await _initializeControllerFuture;
+
+                // Construct the path where the image should be saved using the
+                // pattern package.
+                final path = join(
+                  // Store the picture in the temp directory.
+                  // Find the temp directory using the `path_provider` plugin.
+                  (await getTemporaryDirectory()).path, '${DateTime.now()}.png',
+                );
+
+                // Attempt to take a picture and log where it's been saved.
+                await _controller.takePicture(path);
+
+                // If the picture was taken, display it on a new screen.
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return DisplayPictureScreen(path);
+                  } //DisplayPictureScreen(path),
+                      ),
+                );
+              } catch (e) {
+                // If an error occurs, log the error to the console.
+                print(e);
+              }
+            }, onLongPress: () async {
+              setState(() {
+                total = 0;
+              });
+
+              FlutterTts flutterTts;
+              flutterTts = FlutterTts();
+              await flutterTts.setSpeechRate(0.8);
+              await flutterTts.awaitSpeakCompletion(true);
+              await flutterTts.speak("Your Total has been reset.");
+            }),
+          ),
         ]),
-
-        
         bottomNavigationBar: BottomAppBar(
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
@@ -200,12 +202,9 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
                       ),
                 );
               }
-              
             },
           ),
-        )
-
-    );
+        ));
   }
 }
 
@@ -236,9 +235,8 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
   Widget build(BuildContext context) {
 //    Image img = Image.file(File(widget.imagePath));
 //    classifyImage(widget.imagePath, total);
-    Future.delayed(const Duration(seconds: 1), () {
+    Future.delayed(const Duration(seconds: 2), () {
       Navigator.of(context).maybePop();
-      
     });
 
     return Scaffold(
@@ -249,19 +247,26 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
       //   automaticallyImplyLeading: false,
       // ),
       appBar: AppBar(
+        excludeHeaderSemantics: true,
         toolbarHeight: 80,
         centerTitle: true,
-        title: ExcludeSemantics(
-          excluding: true,
-          child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset("assets/Icon_Clear.png",
-                            height: 55,
-                            width:70,),
-                  const Text('Peso Reader', style: TextStyle(color: Colors.black,fontSize: 12)),
-                ],
+        title: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ExcludeSemantics(
+              excluding: true,
+              child: Image.asset(
+                "assets/Icon_Clear.png",
+                height: 55,
+                width: 70,
               ),
+            ),
+            ExcludeSemantics(
+              excluding: true,
+              child: const Text('PesoReader',
+                  style: TextStyle(color: Colors.black, fontSize: 12)),
+            ),
+          ],
         ),
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
@@ -280,13 +285,19 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
                     child: Container(
                       color: Colors.black,
                       //width: double.infinity,
-                      child: Text(
-                        '${op[0]["label"]} Pesos',
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 65,
-                            fontWeight: FontWeight.bold),
-                      ),
+                      child: counter
+                          ? Text('${op[0]["label"]} Pesos, Total: $total Pesos',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 50,
+                                  fontWeight: FontWeight.bold))
+                          : Text(
+                              '${op[0]["label"]} Pesos',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 50,
+                                  fontWeight: FontWeight.bold),
+                            ),
                       alignment: Alignment.center,
                     ),
                   ),
@@ -426,8 +437,7 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
   loadModel() async {
     try {
       await Tflite.loadModel(
-          model: "assets/modelv1.tflite",
-          labels: "assets/labels_mislabel.txt");
+          model: "assets/modelv1.tflite", labels: "assets/labels_mislabel.txt");
       print('Model Loaded Succesfully');
     } on PlatformException {
       print('Model Failed to Load');
