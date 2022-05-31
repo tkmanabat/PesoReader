@@ -108,6 +108,7 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
                   flutterTts.awaitSpeakCompletion(true);
                   if (counter == true) {
                     flutterTts.speak("Counter Enabled");
+                    total = 0;
                   } else {
                     flutterTts.speak("Counter Disabled");
                   }

@@ -1,5 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.banknote_detection">
+   <queries>
+    <intent>
+        <action android:name="android.intent.action.TTS_SERVICE" />
+    </intent>
+    </queries> 
+
    <application
         android:label="PesoReader"
         android:icon="@mipmap/ic_launcher">
