@@ -131,7 +131,7 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
               if (snapshot.connectionState == ConnectionState.done) {
                 // If the Future is complete, display the preview.
 
-                return CameraPreview(_controller);
+                return Center(child: CameraPreview(_controller));
               } else {
                 // Otherwise, display a loading indicator.
                 return const Center(child: CircularProgressIndicator());
@@ -148,22 +148,24 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
 
                 // Construct the path where the image should be saved using the
                 // pattern package.
-                final path = join(
-                  // Store the picture in the temp directory.
-                  // Find the temp directory using the `path_provider` plugin.
-                  (await getTemporaryDirectory()).path, '${DateTime.now()}.png',
-                );
+
+
+                // final path = join(
+                //   // Store the picture in the temp directory.
+                //   // Find the temp directory using the `path_provider` plugin.
+                //   (await getTemporaryDirectory()).path, '${DateTime.now()}.png',
+                // );
 
                 // Attempt to take a picture and log where it's been saved.
-                await _controller.takePicture(path);
+                final image= await _controller.takePicture();
 
                 // If the picture was taken, display it on a new screen.
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) {
-                    return DisplayPictureScreen(path);
+                    return DisplayPictureScreen(image.path);
                   } //DisplayPictureScreen(path),
-                      ),
+                  ),
                 );
               } catch (e) {
                 // If an error occurs, log the error to the console.
