@@ -215,18 +215,13 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
   List op;
   Image img;
   bool loading = true;
+  String bill;
 
   final List<String> _labels = ['20', '50', '100', '200', '500', '1000'];
-
-  // List<YoloxResults> _yoloxResults = [];
 
   @override
   void initState() {
     super.initState();
-    // loadModel().then((value) {
-    //   setState(() {});
-    // });
-    //img = Image.file(File(widget.imagePath));
     classifyImage(widget.imagePath, widget.ncnn, _labels);
   }
 
@@ -271,19 +266,17 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  // Center(child: Text('${op[0]["label"]} Pesos')),
                   Expanded(
                     child: Container(
                       color: Colors.black,
-                      //width: double.infinity,
                       child: counter
-                          ? Text('${_labels[op[0].label]} Pesos, Total: $total Pesos',
+                          ? Text('$bill, Total: $total Pesos',
                               style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 50,
                                   fontWeight: FontWeight.bold))
                           : Text(
-                              '${_labels[op[0].label]} Pesos',
+                              bill,
                               style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 50,
@@ -292,13 +285,6 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
                       alignment: Alignment.center,
                     ),
                   ),
-                  // Expanded(child: Center(child: img)),
-                  // SizedBox(
-                  //   height: 20,
-                  // ),
-                  // op!=null
-                  // ?Text('${op[0]["label"]}')
-                  //:Container(),
                 ],
               ),
             ),
@@ -315,9 +301,9 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
     await flutterTts.setSpeechRate(0.8);
     await flutterTts.awaitSpeakCompletion(true);
     if (counter == true) {
-      await flutterTts.speak('${speakString}! Your total is: ${tot}');
+      await flutterTts.speak('$speakString! Your total is: $tot');
     } else if (counter == false) {
-      await flutterTts.speak('${speakString}!');
+      await flutterTts.speak('$speakString!');
     }
   }
 
@@ -342,23 +328,28 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
     );
 
     op = results;
-    int index_label = op[0].label;
-    String bill = labels[index_label];
+    bill = 'No Banknote Found!';
 
     print(op);
 
-    print(bill);
+    if (op.isEmpty == true) {
+      runTextToSpeech("No banknote found", total);
 
-    if (op != null) {
-      String stringValue = bill.toString();
+    } else if (op != null) {
+      int indexLabel = op[0].label;
+      bill = labels[indexLabel]+' Pesos';
+
+      String stringValue = labels[indexLabel].toString();
       int totalValue = int.parse(stringValue);
+
+      print(bill);
 
       if (counter == true) {
         total += totalValue;
       }
-      runTextToSpeech("$stringValue pesos", total);
-    }
-     else {
+
+      runTextToSpeech(bill, total);
+    } else {
       runTextToSpeech("No note found", total);
     }
 
@@ -366,10 +357,9 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
       loading = false;
       op = op;
       total = total;
-      
+      bill = bill;
     });
   }
-
 
   @override
   void dispose() {
