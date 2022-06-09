@@ -1,22 +1,21 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:tflite/tflite.dart';
+import 'package:ncnn_yolox_flutter/ncnn_yolox_flutter.dart';
 
 int total = 0;
 bool counter = true;
 
 class TakePictureScreen extends StatefulWidget {
+  final NcnnYolox ncnn;
   final CameraDescription camera;
   const TakePictureScreen({
     Key key,
     @required this.camera,
+    @required this.ncnn,
   }) : super(key: key);
 
   @override
@@ -26,6 +25,7 @@ class TakePictureScreen extends StatefulWidget {
 class _TakePictureScreenState extends State<TakePictureScreen> {
   CameraController _controller;
   Future<void> _initializeControllerFuture;
+
   final picker = ImagePicker();
   String path;
 
@@ -39,6 +39,7 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
       widget.camera,
       // Define the resolution to use.
       ResolutionPreset.high,
+      imageFormatGroup: ImageFormatGroup.yuv420,
     );
 
     // Next, initialize the controller. This returns a Future.
@@ -146,26 +147,16 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
                 // Ensure that the camera is initialized.
                 await _initializeControllerFuture;
 
-                // Construct the path where the image should be saved using the
-                // pattern package.
-
-
-                // final path = join(
-                //   // Store the picture in the temp directory.
-                //   // Find the temp directory using the `path_provider` plugin.
-                //   (await getTemporaryDirectory()).path, '${DateTime.now()}.png',
-                // );
-
                 // Attempt to take a picture and log where it's been saved.
-                final image= await _controller.takePicture();
+                final image = await _controller.takePicture();
 
                 // If the picture was taken, display it on a new screen.
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) {
-                    return DisplayPictureScreen(image.path);
+                    return DisplayPictureScreen(image.path, widget.ncnn);
                   } //DisplayPictureScreen(path),
-                  ),
+                      ),
                 );
               } catch (e) {
                 // If an error occurs, log the error to the console.
@@ -200,7 +191,7 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) {
-                    return DisplayPictureScreen(path);
+                    return DisplayPictureScreen(path, widget.ncnn);
                   } //DisplayPictureScreen(path),
                       ),
                 );
@@ -214,7 +205,8 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
 // A widget that displays the picture taken by the user.
 class DisplayPictureScreen extends StatefulWidget {
   final String imagePath;
-  DisplayPictureScreen(this.imagePath);
+  final NcnnYolox ncnn;
+  DisplayPictureScreen(this.imagePath, this.ncnn);
   @override
   _DisplayPictureScreenState createState() => _DisplayPictureScreenState();
 }
@@ -224,31 +216,27 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
   Image img;
   bool loading = true;
 
+  final List<String> _labels = ['20', '50', '100', '200', '500', '1000'];
+
+  // List<YoloxResults> _yoloxResults = [];
+
   @override
   void initState() {
     super.initState();
-    loadModel().then((value) {
-      setState(() {});
-    });
-    img = Image.file(File(widget.imagePath));
-    classifyImage(widget.imagePath);
+    // loadModel().then((value) {
+    //   setState(() {});
+    // });
+    //img = Image.file(File(widget.imagePath));
+    classifyImage(widget.imagePath, widget.ncnn, _labels);
   }
 
   @override
   Widget build(BuildContext context) {
-//    Image img = Image.file(File(widget.imagePath));
-//    classifyImage(widget.imagePath, total);
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.of(context).maybePop();
     });
 
     return Scaffold(
-      // The image is stored as a file on the device. Use the `Image.file`
-      // constructor with the given path to display the image.
-      // appBar: AppBar(
-      //   title: Center(child: Text('Banknote Detection')),
-      //   automaticallyImplyLeading: false,
-      // ),
       appBar: AppBar(
         excludeHeaderSemantics: true,
         toolbarHeight: 80,
@@ -289,13 +277,13 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
                       color: Colors.black,
                       //width: double.infinity,
                       child: counter
-                          ? Text('${op[0]["label"]} Pesos, Total: $total Pesos',
+                          ? Text('${_labels[op[0].label]} Pesos, Total: $total Pesos',
                               style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 50,
                                   fontWeight: FontWeight.bold))
                           : Text(
-                              '${op[0]["label"]} Pesos',
+                              '${_labels[op[0].label]} Pesos',
                               style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 50,
@@ -331,125 +319,60 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
     } else if (counter == false) {
       await flutterTts.speak('${speakString}!');
     }
-
-    // if (outputMoney == "50 pesos") {
-    //   String tot = totalMoney.toString();
-    //   print(tot);
-    //   String speakString = "Fifty Pesos";
-    //   await flutterTts.setSpeechRate(0.8);
-    //   await flutterTts.awaitSpeakCompletion(true);
-    //   await flutterTts.speak(speakString);
-    // }
-    // if (outputMoney == "100 pesos") {
-    //   String tot = totalMoney.toString();
-    //   print(tot);
-    //   String speakString = "One Hundred Pesos";
-    //   await flutterTts.setSpeechRate(0.8);
-    //   await flutterTts.awaitSpeakCompletion(true);
-    //   await flutterTts.speak(speakString);
-    // }
-    // if (outputMoney == "200 pesos") {
-    //   String tot = totalMoney.toString();
-    //   print(tot);
-    //   String speakString = "Two Hundred Pesos";
-    //   await flutterTts.setSpeechRate(0.8);
-    //   await flutterTts.awaitSpeakCompletion(true);
-    //   await flutterTts.speak(speakString);
-    // }
-    // if (outputMoney == "500 pesos") {
-    //   String tot = totalMoney.toString();
-    //   print(tot);
-    //   String speakString = "Five Hundred Pesos";
-    //   await flutterTts.setSpeechRate(0.8);
-    //   await flutterTts.awaitSpeakCompletion(true);
-    //   await flutterTts.speak(speakString);
-    // }
-    // if (outputMoney == "1000 pesos") {
-    //   String tot = totalMoney.toString();
-    //   print(tot);
-    //   String speakString = "One Thousand Pesos";
-    //   await flutterTts.setSpeechRate(0.8);
-    //   await flutterTts.awaitSpeakCompletion(true);
-    //   await flutterTts.speak(speakString);
-    // }
   }
 
-  Future<dynamic> classifyImage(String image) async {
-    var output = await Tflite.runModelOnImage(
-      path: image,
-      numResults: 6,
-      threshold: 0.5,
-      imageMean: 127.5, //127.5
-      imageStd: 127.5, //127.5
+  Future<dynamic> classifyImage(String image, final ncnn, List labels) async {
+    final decodedImage = await decodeImageFromList(
+      File(
+        widget.imagePath,
+      ).readAsBytesSync(),
     );
 
-    op = output;
+    final pixels = (await decodedImage.toByteData(
+      format: ui.ImageByteFormat.rawRgba,
+    ))
+        .buffer
+        .asUint8List();
+
+    final results = ncnn.detect(
+      pixels: pixels,
+      pixelFormat: PixelFormat.rgba,
+      width: decodedImage.width,
+      height: decodedImage.height,
+    );
+
+    op = results;
+    int index_label = op[0].label;
+    String bill = labels[index_label];
 
     print(op);
 
+    print(bill);
+
     if (op != null) {
-      String stringValue = op[0]["label"].toString();
+      String stringValue = bill.toString();
       int totalValue = int.parse(stringValue);
 
       if (counter == true) {
         total += totalValue;
       }
-
       runTextToSpeech("$stringValue pesos", total);
-    } else {
+    }
+     else {
       runTextToSpeech("No note found", total);
     }
-
-    // if (op != null) {
-    //   if (op[0]["label"] == "20") {
-    //     total += op[0]["label"];
-    //     runTextToSpeech("${op[0]["label"]} pesos", total);
-    //   }
-    //   if (op[0]["label"] == "50") {
-    //     total += 50;
-    //     runTextToSpeech("50 pesos", total);
-    //   }
-    //   if (op[0]["label"] == "100") {
-    //     total += 100;
-    //     runTextToSpeech("100 pesos", total);
-    //   }
-    //   if (op[0]["label"] == "200") {
-    //     total += 200;
-    //     runTextToSpeech("200 pesos", total);
-    //   }
-
-    //   if (op[0]["label"] == "500") {
-    //     total += 500;
-    //     runTextToSpeech("500 pesos", total);
-    //   }
-
-    //   if (op[0]["label"] == "1000") {
-    //     total += 1000;
-    //     runTextToSpeech("1000 pesos", total);
-    //   }
-    // } else
-    //   runTextToSpeech("No note found", total);
 
     setState(() {
       loading = false;
       op = op;
       total = total;
+      
     });
   }
 
-  loadModel() async {
-    try {
-      await Tflite.loadModel(
-          model: "assets/modelv1.tflite", labels: "assets/labels_mislabel.txt");
-      print('Model Loaded Succesfully');
-    } on PlatformException {
-      print('Model Failed to Load');
-    }
-  }
 
   @override
   void dispose() {
-    Tflite.close();
     super.dispose();
   }
 }
