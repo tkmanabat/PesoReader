@@ -131,7 +131,7 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 // If the Future is complete, display the preview.
-
+                _controller.setFlashMode(FlashMode.off);
                 return Center(child: CameraPreview(_controller));
               } else {
                 // Otherwise, display a loading indicator.
@@ -334,10 +334,9 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
 
     if (op.isEmpty == true) {
       runTextToSpeech("No banknote found", total);
-
     } else if (op != null) {
       int indexLabel = op[0].label;
-      bill = labels[indexLabel]+' Pesos';
+      bill = labels[indexLabel] + ' Pesos';
 
       String stringValue = labels[indexLabel].toString();
       int totalValue = int.parse(stringValue);
