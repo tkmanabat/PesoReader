@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:ncnn_yolox_flutter/ncnn_yolox_flutter.dart';
 
+
 int total = 0;
 bool counter = true;
 
@@ -22,6 +23,21 @@ class TakePictureScreen extends StatefulWidget {
   _TakePictureScreenState createState() => _TakePictureScreenState();
 }
 
+
+class _MediaSizeClipper extends CustomClipper<Rect> {
+      final Size mediaSize;
+      const _MediaSizeClipper(this.mediaSize);
+      @override
+      Rect getClip(Size size) {
+        return Rect.fromLTWH(0, 0, mediaSize.width, mediaSize.height);
+      }
+      @override
+      bool shouldReclip(CustomClipper<Rect> oldClipper) {
+        return true;
+      }
+    }
+
+
 class _TakePictureScreenState extends State<TakePictureScreen> {
   CameraController _controller;
   Future<void> _initializeControllerFuture;
@@ -32,6 +48,7 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
   @override
   void initState() {
     super.initState();
+    
     // To display the current output from the Camera,
     // create a CameraController.
     _controller = CameraController(
@@ -63,6 +80,9 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
     });
   }
 
+
+  
+
   @override
   void dispose() {
     // Dispose of the controller when the widget is disposed.
@@ -72,7 +92,11 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
 
   @override
   Widget build(BuildContext context) {
+  
+
+
     return Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
           toolbarHeight: 80,
           centerTitle: true,
@@ -88,35 +112,48 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
                   width: 70,
                 ),
                 const Text('PesoReader',
-                    style: TextStyle(color: Colors.black, fontSize: 12)),
+                    style: TextStyle(color: Colors.white, fontSize: 12)),
               ],
             ),
           ),
-          backgroundColor: Colors.white,
-          actions: [
-            Semantics(
-              label: 'Counter',
-              child: IconButton(
-                padding: const EdgeInsets.only(right: 30),
-                onPressed: () {
-                  setState(() {
-                    counter = !counter;
-                  });
 
-                  FlutterTts flutterTts;
-                  flutterTts = FlutterTts();
-                  flutterTts.setSpeechRate(0.8);
-                  flutterTts.awaitSpeakCompletion(true);
-                  if (counter == true) {
-                    flutterTts.speak("Counter Enabled");
-                    total = 0;
-                  } else {
-                    flutterTts.speak("Counter Disabled");
-                  }
-                },
-                icon: Icon(Icons.layers_clear,
-                    color: counter ? Colors.black : Colors.grey, size: 25),
-              ),
+          elevation: 0,
+          
+          backgroundColor: Colors.transparent,
+
+          // flexibleSpace: Container(
+          //   decoration: const BoxDecoration(
+          //     gradient: LinearGradient(
+          //       begin: Alignment.topCenter,
+          //       end:Alignment.bottomCenter,
+          //       colors:<Color>[Colors.black,Colors.white]
+          //     )
+          //   ),
+          // ),
+
+          actions: [
+            IconButton(
+              padding: const EdgeInsets.only(right: 30),
+              onPressed: () {
+                setState(() {
+                  counter = !counter;
+                });
+
+                FlutterTts flutterTts;
+                flutterTts = FlutterTts();
+                flutterTts.setSpeechRate(0.8);
+                flutterTts.awaitSpeakCompletion(true);
+                if (counter == true) {
+                  flutterTts.speak("Counter Enabled");
+                  total = 0;
+                } else {
+                  flutterTts.speak("Counter Disabled");
+                }
+              },
+              icon: Icon(counter ? Icons.add_circle_outline_outlined : Icons.add_circle_outlined ,
+                  color: counter ? Colors.white : Colors.red, size: 30,
+                  semanticLabel: 'Counter button',
+                  ),
             ),
           ],
         ),
@@ -131,8 +168,17 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 // If the Future is complete, display the preview.
+                final mediaSize = MediaQuery.of(context).size;
+                final scale = 1 / (_controller.value.aspectRatio * mediaSize.aspectRatio);
                 _controller.setFlashMode(FlashMode.off);
-                return Center(child: CameraPreview(_controller));
+                return ClipRect(
+                  clipper: _MediaSizeClipper(mediaSize),
+                  child: Transform.scale(
+                    scale: scale,
+                    alignment: Alignment.topCenter,
+                    child: CameraPreview(_controller),
+                  ),
+                );
               } else {
                 // Otherwise, display a loading indicator.
                 return const Center(child: CircularProgressIndicator());
