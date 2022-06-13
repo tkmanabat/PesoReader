@@ -175,6 +175,8 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
             }),
           ),
         ]),
+
+
         bottomNavigationBar: BottomAppBar(
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
@@ -247,9 +249,9 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
                 width: 70,
               ),
             ),
-            ExcludeSemantics(
+            const ExcludeSemantics(
               excluding: true,
-              child: const Text('PesoReader',
+              child:  Text('PesoReader',
                   style: TextStyle(color: Colors.black, fontSize: 12)),
             ),
           ],
@@ -257,6 +259,8 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
       ),
+
+
       body: loading
           ? Container(
               alignment: Alignment.center,
@@ -270,7 +274,8 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
                     child: Container(
                       color: Colors.black,
                       child: counter
-                          ? Text('$bill, Total: $total Pesos',
+                          ? Text('$bill\n Total: $total Pesos',
+                              textAlign: ui.TextAlign.center,
                               style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 50,
