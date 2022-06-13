@@ -284,7 +284,9 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
       body: loading
           ? Container(
               alignment: Alignment.center,
-              child: const CircularProgressIndicator(),
+              child:  CircularProgressIndicator(
+                valueColor: new AlwaysStoppedAnimation<Color>(Colors.black),
+              ),
             )
           : Container(
               child: Row(
