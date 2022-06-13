@@ -77,8 +77,8 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
           toolbarHeight: 80,
           centerTitle: true,
           excludeHeaderSemantics: true,
-          title: Semantics(
-            label: 'App Logo',
+          title: ExcludeSemantics(
+            excluding: true,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

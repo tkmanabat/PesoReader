@@ -17,7 +17,7 @@ Future<void> main() async {
   );
 
   runApp(MaterialApp(
-    showSemanticsDebugger: false,
+    showSemanticsDebugger: true,
     theme: ThemeData(),
     debugShowCheckedModeBanner: false,
     initialRoute: '/',
