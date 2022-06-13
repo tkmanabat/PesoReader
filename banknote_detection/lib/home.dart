@@ -280,33 +280,7 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
     });
 
     return Scaffold(
-      appBar: AppBar(
-        excludeHeaderSemantics: true,
-        toolbarHeight: 80,
-        centerTitle: true,
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ExcludeSemantics(
-              excluding: true,
-              child: Image.asset(
-                "assets/Icon_Clear.png",
-                height: 55,
-                width: 70,
-              ),
-            ),
-            const ExcludeSemantics(
-              excluding: true,
-              child:  Text('PesoReader',
-                  style: TextStyle(color: Colors.black, fontSize: 12)),
-            ),
-          ],
-        ),
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
-      ),
-
-
+     
       body: loading
           ? Container(
               alignment: Alignment.center,
