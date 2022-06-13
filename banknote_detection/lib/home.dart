@@ -81,7 +81,6 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
   }
 
 
-  
 
   @override
   void dispose() {
@@ -92,9 +91,6 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
 
   @override
   Widget build(BuildContext context) {
-  
-
-
     return Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
@@ -118,22 +114,13 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
           ),
 
           elevation: 0,
-          
           backgroundColor: Colors.transparent,
 
-          // flexibleSpace: Container(
-          //   decoration: const BoxDecoration(
-          //     gradient: LinearGradient(
-          //       begin: Alignment.topCenter,
-          //       end:Alignment.bottomCenter,
-          //       colors:<Color>[Colors.black,Colors.white]
-          //     )
-          //   ),
-          // ),
+          
 
           actions: [
             IconButton(
-              padding: const EdgeInsets.only(right: 30),
+              //padding: const EdgeInsets.only(right: 30),
               onPressed: () {
                 setState(() {
                   counter = !counter;
@@ -246,7 +233,8 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
               }
             },
           ),
-        ));
+        )
+        );
   }
 }
 
@@ -296,7 +284,7 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
                     child: Container(
                       color: Colors.black,
                       child: counter
-                          ? Text('$bill\n Total: $total Pesos',
+                          ? Text('$bill\n\n\n Total: $total Pesos',
                               textAlign: ui.TextAlign.center,
                               style: const TextStyle(
                                   color: Colors.white,
