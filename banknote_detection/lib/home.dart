@@ -6,7 +6,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:ncnn_yolox_flutter/ncnn_yolox_flutter.dart';
 
-
 int total = 0;
 bool counter = true;
 
@@ -23,20 +22,19 @@ class TakePictureScreen extends StatefulWidget {
   _TakePictureScreenState createState() => _TakePictureScreenState();
 }
 
-
 class _MediaSizeClipper extends CustomClipper<Rect> {
-      final Size mediaSize;
-      const _MediaSizeClipper(this.mediaSize);
-      @override
-      Rect getClip(Size size) {
-        return Rect.fromLTWH(0, 0, mediaSize.width, mediaSize.height);
-      }
-      @override
-      bool shouldReclip(CustomClipper<Rect> oldClipper) {
-        return true;
-      }
-    }
+  final Size mediaSize;
+  const _MediaSizeClipper(this.mediaSize);
+  @override
+  Rect getClip(Size size) {
+    return Rect.fromLTWH(0, 0, mediaSize.width, mediaSize.height);
+  }
 
+  @override
+  bool shouldReclip(CustomClipper<Rect> oldClipper) {
+    return true;
+  }
+}
 
 class _TakePictureScreenState extends State<TakePictureScreen> {
   CameraController _controller;
@@ -45,22 +43,27 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
   final picker = ImagePicker();
   String path;
 
+  FlashMode currentFlashMode = FlashMode.off;
+
   @override
   void initState() {
     super.initState();
-    
+
     // To display the current output from the Camera,
     // create a CameraController.
     _controller = CameraController(
       // Get a specific camera from the list of available cameras.
       widget.camera,
       // Define the resolution to use.
-      ResolutionPreset.high,
+      ResolutionPreset.max,
       imageFormatGroup: ImageFormatGroup.yuv420,
     );
 
     // Next, initialize the controller. This returns a Future.
     _initializeControllerFuture = _controller.initialize();
+    
+    // currentFlashMode = _controller.value.flashMode;
+    // print(currentFlashMode);
 
     FlutterTts flutterTts;
     flutterTts = FlutterTts();
@@ -79,8 +82,6 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
       path = image.path;
     });
   }
-
-
 
   @override
   void dispose() {
@@ -112,12 +113,37 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
               ],
             ),
           ),
-
           elevation: 0,
           backgroundColor: Colors.transparent,
 
-          
 
+          leading: IconButton(
+              onPressed: () {
+                setState(() {
+                  FlutterTts flutterTts;
+                  flutterTts = FlutterTts();
+                  flutterTts.setSpeechRate(0.8);
+                  flutterTts.awaitSpeakCompletion(true);
+
+                  if (currentFlashMode == FlashMode.off) {
+                    _controller.setFlashMode(FlashMode.always);
+                    flutterTts.speak("Flash on");
+                  } else if (currentFlashMode == FlashMode.always) {
+                    _controller.setFlashMode(FlashMode.off);
+                    flutterTts.speak("Flash off");
+                  }
+                });
+              },
+              icon: Icon(
+                  currentFlashMode == FlashMode.off
+                      ? Icons.flash_off
+                      : Icons.flash_on,
+                  color: currentFlashMode == FlashMode.off
+                   ?Colors.white
+                   :Colors.amber,
+                  size: 30,
+                  semanticLabel: 'Camera Flash',)),
+          
           actions: [
             IconButton(
               //padding: const EdgeInsets.only(right: 30),
@@ -137,10 +163,14 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
                   flutterTts.speak("Counter Disabled");
                 }
               },
-              icon: Icon(counter ? Icons.add_circle_outline_outlined : Icons.add_circle_outlined ,
-                  color: counter ? Colors.white : Colors.red, size: 30,
-                  semanticLabel: 'Counter button',
-                  ),
+              icon: Icon(
+                counter
+                    ? Icons.add_circle_outline_outlined
+                    : Icons.add_circle_outlined,
+                color: counter ? Colors.white : Colors.red,
+                size: 30,
+                semanticLabel: 'Counter button',
+              ),
             ),
           ],
         ),
@@ -156,8 +186,12 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
               if (snapshot.connectionState == ConnectionState.done) {
                 // If the Future is complete, display the preview.
                 final mediaSize = MediaQuery.of(context).size;
-                final scale = 1 / (_controller.value.aspectRatio * mediaSize.aspectRatio);
-                _controller.setFlashMode(FlashMode.off);
+                final scale =
+                    1 / (_controller.value.aspectRatio * mediaSize.aspectRatio);
+                
+                
+                _controller.setFlashMode(currentFlashMode);
+
                 return ClipRect(
                   clipper: _MediaSizeClipper(mediaSize),
                   child: Transform.scale(
@@ -208,8 +242,6 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
             }),
           ),
         ]),
-
-
         bottomNavigationBar: BottomAppBar(
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
@@ -233,8 +265,7 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
               }
             },
           ),
-        )
-        );
+        ));
   }
 }
 
@@ -268,11 +299,10 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
     });
 
     return Scaffold(
-     
       body: loading
           ? Container(
               alignment: Alignment.center,
-              child:  CircularProgressIndicator(
+              child: CircularProgressIndicator(
                 valueColor: new AlwaysStoppedAnimation<Color>(Colors.black),
               ),
             )
