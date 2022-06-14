@@ -22,20 +22,6 @@ class TakePictureScreen extends StatefulWidget {
   _TakePictureScreenState createState() => _TakePictureScreenState();
 }
 
-class _MediaSizeClipper extends CustomClipper<Rect> {
-  final Size mediaSize;
-  const _MediaSizeClipper(this.mediaSize);
-  @override
-  Rect getClip(Size size) {
-    return Rect.fromLTWH(0, 0, mediaSize.width, mediaSize.height);
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Rect> oldClipper) {
-    return true;
-  }
-}
-
 class _TakePictureScreenState extends State<TakePictureScreen> {
   CameraController _controller;
   Future<void> _initializeControllerFuture;
@@ -55,13 +41,13 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
       // Get a specific camera from the list of available cameras.
       widget.camera,
       // Define the resolution to use.
-      ResolutionPreset.max,
+      ResolutionPreset.high,
       imageFormatGroup: ImageFormatGroup.yuv420,
     );
 
     // Next, initialize the controller. This returns a Future.
     _initializeControllerFuture = _controller.initialize();
-    
+
     // currentFlashMode = _controller.value.flashMode;
     // print(currentFlashMode);
 
@@ -94,85 +80,99 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          toolbarHeight: 80,
-          centerTitle: true,
-          excludeHeaderSemantics: true,
-          title: ExcludeSemantics(
-            excluding: true,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  "assets/Icon_Clear.png",
-                  height: 55,
-                  width: 70,
+        appBar: PreferredSize(
+          child: ClipRRect(
+            child: BackdropFilter(
+              filter: ui.ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: AppBar(
+                toolbarHeight: 80,
+                centerTitle: true,
+                excludeHeaderSemantics: true,
+                title: ExcludeSemantics(
+                  excluding: true,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "assets/Icon_Clear.png",
+                        height: 55,
+                        width: 70,
+                      ),
+                      const Text('PesoReader',
+                          style: TextStyle(color: Colors.white, fontSize: 12)),
+                    ],
+                  ),
                 ),
-                const Text('PesoReader',
-                    style: TextStyle(color: Colors.white, fontSize: 12)),
-              ],
-            ),
-          ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-
-
-          leading: IconButton(
-              onPressed: () {
-                setState(() {
-                  FlutterTts flutterTts;
-                  flutterTts = FlutterTts();
-                  flutterTts.setSpeechRate(0.8);
-                  flutterTts.awaitSpeakCompletion(true);
-
-                  if (currentFlashMode == FlashMode.off) {
-                    _controller.setFlashMode(FlashMode.always);
-                    flutterTts.speak("Flash on");
-                  } else if (currentFlashMode == FlashMode.always) {
-                    _controller.setFlashMode(FlashMode.off);
-                    flutterTts.speak("Flash off");
-                  }
-                });
-              },
-              icon: Icon(
-                  currentFlashMode == FlashMode.off
-                      ? Icons.flash_off
-                      : Icons.flash_on,
-                  color: currentFlashMode == FlashMode.off
-                   ?Colors.white
-                   :Colors.amber,
-                  size: 30,
-                  semanticLabel: 'Camera Flash',)),
-          
-          actions: [
-            IconButton(
-              //padding: const EdgeInsets.only(right: 30),
-              onPressed: () {
-                setState(() {
-                  counter = !counter;
-                });
-
-                FlutterTts flutterTts;
-                flutterTts = FlutterTts();
-                flutterTts.setSpeechRate(0.8);
-                flutterTts.awaitSpeakCompletion(true);
-                if (counter == true) {
-                  flutterTts.speak("Counter Enabled");
-                  total = 0;
-                } else {
-                  flutterTts.speak("Counter Disabled");
-                }
-              },
-              icon: Icon(
-                counter
-                    ? Icons.add_circle_outline_outlined
-                    : Icons.add_circle_outlined,
-                color: counter ? Colors.white : Colors.red,
-                size: 30,
-                semanticLabel: 'Counter button',
+                elevation: 0,
+                backgroundColor: Colors.black12.withOpacity(0.2),
+                leading: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        FlutterTts flutterTts;
+                        flutterTts = FlutterTts();
+                        flutterTts.setSpeechRate(0.8);
+                        flutterTts.awaitSpeakCompletion(true);
+                    
+                        if (currentFlashMode == FlashMode.off) {
+                          _controller.setFlashMode(FlashMode.always);
+                          currentFlashMode = FlashMode.always;
+                          flutterTts.speak("Flash on");
+                        } 
+                        
+                        else if (currentFlashMode == FlashMode.always) {
+                          _controller.setFlashMode(FlashMode.off);
+                          currentFlashMode = FlashMode.off;
+                          flutterTts.speak("Flash off");
+                        }
+                      });
+                    },
+                    
+                    icon: Icon(
+                      currentFlashMode == FlashMode.off
+                          ? Icons.flash_off
+                          : Icons.flash_on,
+                      color: currentFlashMode == FlashMode.off
+                          ? Colors.white
+                          : Colors.amber,
+                      size: 30,
+                      semanticLabel: 'Camera Flash',
+                    )),
+                actions: [
+                  IconButton(
+                    //padding: const EdgeInsets.only(right: 30),
+                    onPressed: () {
+                      setState(() {
+                        counter = !counter;
+                      });
+                    
+                      FlutterTts flutterTts;
+                      flutterTts = FlutterTts();
+                      flutterTts.setSpeechRate(0.8);
+                      flutterTts.awaitSpeakCompletion(true);
+                      if (counter == true) {
+                        flutterTts.speak("Counter Enabled");
+                        total = 0;
+                      } else {
+                        flutterTts.speak("Counter Disabled");
+                      }
+                    },
+                    icon: Icon(
+                      counter
+                          ? Icons.add_circle_outline_outlined
+                          : Icons.add_circle_outlined,
+                      color: counter ? Colors.white : Colors.red,
+                      size: 30,
+                      semanticLabel: 'Counter button',
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
+        preferredSize: Size(
+            double.infinity,
+            86.0,
+        ),
         ),
 
         // Wait until the controller is initialized before displaying the
@@ -185,21 +185,10 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 // If the Future is complete, display the preview.
-                final mediaSize = MediaQuery.of(context).size;
-                final scale =
-                    1 / (_controller.value.aspectRatio * mediaSize.aspectRatio);
-                
-                
+
                 _controller.setFlashMode(currentFlashMode);
 
-                return ClipRect(
-                  clipper: _MediaSizeClipper(mediaSize),
-                  child: Transform.scale(
-                    scale: scale,
-                    alignment: Alignment.topCenter,
-                    child: CameraPreview(_controller),
-                  ),
-                );
+                return Center(child: CameraPreview(_controller));
               } else {
                 // Otherwise, display a loading indicator.
                 return const Center(child: CircularProgressIndicator());
