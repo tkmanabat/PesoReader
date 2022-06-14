@@ -112,21 +112,18 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
                         flutterTts = FlutterTts();
                         flutterTts.setSpeechRate(0.8);
                         flutterTts.awaitSpeakCompletion(true);
-                    
+
                         if (currentFlashMode == FlashMode.off) {
                           _controller.setFlashMode(FlashMode.always);
                           currentFlashMode = FlashMode.always;
                           flutterTts.speak("Flash on");
-                        } 
-                        
-                        else if (currentFlashMode == FlashMode.always) {
+                        } else if (currentFlashMode == FlashMode.always) {
                           _controller.setFlashMode(FlashMode.off);
                           currentFlashMode = FlashMode.off;
                           flutterTts.speak("Flash off");
                         }
                       });
                     },
-                    
                     icon: Icon(
                       currentFlashMode == FlashMode.off
                           ? Icons.flash_off
@@ -144,7 +141,7 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
                       setState(() {
                         counter = !counter;
                       });
-                    
+
                       FlutterTts flutterTts;
                       flutterTts = FlutterTts();
                       flutterTts.setSpeechRate(0.8);
@@ -169,16 +166,16 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
               ),
             ),
           ),
-        preferredSize: Size(
+          preferredSize: Size(
             double.infinity,
             86.0,
-        ),
+          ),
         ),
 
         // Wait until the controller is initialized before displaying the
         // camera preview. Use a FutureBuilder to display a loading spinner
         // until the controller has finished initializing.
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.white,
         body: Stack(children: <Widget>[
           FutureBuilder<void>(
             future: _initializeControllerFuture,
@@ -222,6 +219,14 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
               setState(() {
                 total = 0;
               });
+
+              const snackBar =
+                  SnackBar(
+                    content:  Text('Total has been reset',
+                    textAlign: ui.TextAlign.center,),
+                    backgroundColor: Colors.red,);
+
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
               FlutterTts flutterTts;
               flutterTts = FlutterTts();
