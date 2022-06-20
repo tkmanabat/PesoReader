@@ -175,7 +175,7 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
         // Wait until the controller is initialized before displaying the
         // camera preview. Use a FutureBuilder to display a loading spinner
         // until the controller has finished initializing.
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.black,
         body: Stack(children: <Widget>[
           FutureBuilder<void>(
             future: _initializeControllerFuture,
