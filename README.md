@@ -1,5 +1,5 @@
 <p align="center">
- <img src="screenshots/PesoReader_Logo.png" alt="drawing" width=40% height=40%/>
+ <img src="screenshots/PesoReader_Logo.png" alt="drawing" width=30% height=30%/>
 </p>
 <h1 align='center'>PesoReader 💵</h1></center>
 
@@ -37,6 +37,8 @@ Default Hyperparamters were used in training:
 | 1000 Pesos      | 100.00 %                    | 107                   |
 | Mean Average Precision (mAP)       | **98.43 %**                    | 646                   |
 
+
+### Sample Detections 💵
 ![](screenshots/sample_detection.png)
 
 
