@@ -5,6 +5,7 @@
 
 A Flutter application detecting Philippine banknotes for visually impaired users utilizing a YOLOX object detection model.
 
+![](screenshots/demo.gif)
 
 ## Background 💡
 Currency plays an important role as a means of exchange for goods and services. It is relatively simple for normal humans to identify and distinguish each banknote from one another, but one of the challenges faced by people who suffer from visual impairment is distinguishing currency due to the ineffectiveness and lack of tactile marks and the absence of assistive devices.
